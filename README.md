@@ -55,6 +55,7 @@ Install the following on both the WG server and WG peer
 1. The project assumes that you already have a working WG installation on both the WG peer and WG server.
 1. The project assumes that you already have a WG interface like `wg0`.
 1. The project assumes that you already have a WG conf file like `/etc/wireguard/wg0.conf`. ***Take a backup of these files***.
+1. Before running the following scripts, the WG interface is expected to be active/online such that the peer is able to ping the server.    
 1. Start the WG server script before the WG peer script
 
 ### On the WG Server

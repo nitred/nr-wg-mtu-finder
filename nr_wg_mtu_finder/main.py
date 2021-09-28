@@ -5,6 +5,7 @@ import sys
 from pydantic import BaseModel, StrictStr, StrictInt, root_validator
 from typing_extensions import Literal
 from .mtu_finder import MTUFinder
+from distutils.util import strtobool
 
 
 def signal_handler(sig, frame):
@@ -29,6 +30,8 @@ class ArgsModel(BaseModel):
 
     server_ip: StrictStr
     server_port: int = 5000
+
+    peer_skip_errors: bool = True
 
     interface: StrictStr = "wg0"
     conf_file: StrictStr = "/etc/wireguard/wg0.conf"
@@ -93,6 +96,13 @@ def setup_args():
         help="The WG interface name. Default: '/etc/wireguard/wg0.conf'",
         required=False,
         default="/etc/wireguard/wg0.conf",
+    )
+    parser.add_argument(
+        "--peer-skip-errors",
+        help="Skip errors when an expected error occurs in peer mode during MTU loop.",
+        required=False,
+        default=True,
+        type=strtobool,
     )
     args = parser.parse_args()
     return args

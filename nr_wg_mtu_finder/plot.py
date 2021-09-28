@@ -75,10 +75,3 @@ def plot_log(log_filename, plot_filename):
     f.suptitle("Peer MTU vs Server MTU Bandwidth (Mbps)")
     f.tight_layout()
     f.savefig(plot_filename, dpi=300)
-
-
-if __name__ == "__main__":
-    plot_log(
-        "/home/nitred/projects/group-nr/nr-wg-mtu-finder/examples/example.csv",
-        "/home/nitred/projects/group-nr/nr-wg-mtu-finder/examples/example.png",
-    )
