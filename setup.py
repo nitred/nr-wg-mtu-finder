@@ -4,13 +4,6 @@ from os import path
 
 from setuptools import find_packages, setup
 
-here = path.abspath(path.dirname(__file__))
-
-# Get the long description from the relevant file
-with open(path.join(here, "README.md"), encoding="utf-8") as f:
-    long_description = f.read()
-
-
 # Get version without importing, which avoids dependency issues
 def get_version():
     with open("nr_wg_mtu_finder/__init__.py") as version_file:
@@ -20,19 +13,18 @@ def get_version():
 
 
 install_requires = [
-    "pandas>=0.23.4",
-    "matplotlib",
-    "seaborn",
-    "pydantic",
-    "requests",
-    "flask",
+    "pandas>=0.23.4,<1.4",
+    "matplotlib<3.5",
+    "seaborn<0.12",
+    "pydantic<1.9",
+    "requests<2.28",
+    "flask<2.1",
 ]
 
 
 setup(
     name="nr-wg-mtu-finder",
     description="Scripts to find the optimal MTU for Wireguard server and peers.",
-    long_description=long_description,
     version=get_version(),
     include_package_data=True,
     install_requires=install_requires,

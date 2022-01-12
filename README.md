@@ -1,24 +1,29 @@
 # About
-A python 3 project to help find optimal MTUs for a Wireguard peer and server.
+A python project to help find the optimal MTU values that maximize upload or download speeds between a peer and server. It also helps find bandwidth dead zones caused due to a poor choice of MTUs.
+
+I built the project to help myself find the right MTU values for my WG server and peer. I inadvertently found that the default MTU values for the server and peer in my case put my WG connection in a bandwidth dead zone. [Related reddit post](https://www.reddit.com/r/WireGuard/comments/plm8y7/finding_the_optimal_mtu_for_wg_server_and_wg_peer/).
+
 
 ***Please read the following documentation carefully, especially the WARNING section***.
 
-
 * This project offers no warranties, therefore do not use in production. Ideally trying using two VMs that are similar to your production setup.
-* The project was developed and tested against a WG peer and WG server running Ubuntu 20.04. 
+* The project was developed and tested against a WG peer and WG server running Ubuntu 20.04.
 
+
+# Example Bandwidth Plot
+* Light green and white areas indicate good to optimal MTU values.
+* Green areas indicate bad MTU values.
+* Dark green areas are dead zones.
+
+![Bandwidth Plot](./examples/example.png)
 
 # Warning
 ***WARNING: This project contains scripts that run shell commands using root access. DO NOT USE IN PRODUCTION.***
 
 ***WARNING: This project tears down and spins up the Wireguard interface in the order of a thousand times. DO NOT USE IN PRODUCTION.***
 
-
 That being said, if you're an experienced python developer, please go through the code to verify that it meets your security standards.
 
-
-# Example Bandwidth Plot
-![Bandwidth Plot](./examples/example.png)
 
 # Installation
 
@@ -74,7 +79,7 @@ Install the following on both the WG server and WG peer
     [Interface]
     ...
     MTU = 1420  # <----- ADD THIS LINE IF NOT ALREADY EXISTS
-        
+
     [Peer]
     ...
     ```
@@ -90,7 +95,7 @@ Install the following on both the WG server and WG peer
     [Interface]
     ...
     MTU = 1420  # <----- ADD THIS LINE IF NOT ALREADY EXISTS
-        
+
     [Peer]
     ...
     ```
@@ -138,7 +143,7 @@ Install the following on both the WG server and WG peer
         ```
         iperf3 -s
         ```
-1. If the server has finishing cycling through all of its MTUs and then receives a request from peer script that it is ready for a new cycle, then the server sends a `SHUTDOWN` signal to the peer script via the `sync_server`. 
+1. If the server has finishing cycling through all of its MTUs and then receives a request from peer script that it is ready for a new cycle, then the server sends a `SHUTDOWN` signal to the peer script via the `sync_server`.
 
 
 ### How does the server script work?
@@ -158,5 +163,3 @@ Install the following on both the WG server and WG peer
 
 ## License
 MIT
-
-
