@@ -1,5 +1,5 @@
 # About
-A python project to help find the optimal MTU values that maximize upload or download speeds between a peer and server. It also helps find bandwidth dead zones caused due to a poor choice of MTUs.
+A python project to help find the optimal MTU values that maximizes the upload or download speeds between a peer and server. It also helps find bandwidth dead zones caused due to a poor choice of MTUs.
 
 I built the project to help myself find the right MTU values for my WG server and peer. I inadvertently found that the default MTU values for the server and peer in my case put my WG connection in a bandwidth dead zone. [Related reddit post](https://www.reddit.com/r/WireGuard/comments/plm8y7/finding_the_optimal_mtu_for_wg_server_and_wg_peer/).
 
@@ -85,7 +85,7 @@ Install the following on both the WG server and WG peer
     ```
 1. Start the server script with the following command.
     ```bash
-    # Example: The script cycles peer MTUs from 1280 to 1290 in steps of 2
+    # Example: The script cycles server MTUs from 1280 to 1290 in steps of 2
     nr-wg-mtu-finder --mode server --mtu-min 1280 --mtu-max 1290 --mtu-step 2 --server-ip 10.2.0.1
     ```
 
@@ -159,7 +159,41 @@ Install the following on both the WG server and WG peer
     * After each download and upload test, the peer script parses the output and stores the bandwidth results in a bandwidth log file.
 * Once the peer script is finished cycling through all of its MTU, it sends another `peer/ready` request to the server script and restarts the whole process again with the next server MTU.
 * If the server script is finished cycling through all of its MTUs, then it sends a `SHUTDOWN` signal to the peer script as a reply to the `peer/ready` request. The server shuts down after a short delay as does the peer script.
-* Finall the user can check the bandwidth log file to see the results.
+* Finally the user can check the bandwidth log file to see the results.
+
+# CLI Options
+```
+$ nr-wg-mtu-finder --help
+usage: nr-wg-mtu-finder [-h] --mode MODE --mtu-min MTU_MIN --mtu-max MTU_MAX
+                        --mtu-step MTU_STEP --server-ip SERVER_IP
+                        [--server-port SERVER_PORT] [--interface INTERFACE]
+                        [--conf-file CONF_FILE]
+                        [--peer-skip-errors PEER_SKIP_ERRORS]
+
+nr-wg-mtu-finder - Helps find the optimal Wireguard MTU between Server and
+Peer.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --mode MODE           Mode is 'server' if you are running this script on the
+                        WG Server, else the mode is 'peer' if you are running
+                        this script on the WG Peer.
+  --mtu-min MTU_MIN     Min MTU. Must be in the range [1280, 1500].
+  --mtu-max MTU_MAX     Max MTU. Must be in the range [1280, 1500].
+  --mtu-step MTU_STEP   By how much to increment the MTU between loops.
+  --server-ip SERVER_IP
+                        The IP address of the WG server and flask server.
+  --server-port SERVER_PORT
+                        The port for the flask server.
+  --interface INTERFACE
+                        The WG interface name. Default: 'wg0'
+  --conf-file CONF_FILE
+                        The path to the interface config file. Default:
+                        '/etc/wireguard/wg0.conf'
+  --peer-skip-errors PEER_SKIP_ERRORS
+                        Skip errors when an expected error occurs in peer mode
+                        during MTU loop.
+```
 
 ## License
 MIT

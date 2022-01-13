@@ -74,10 +74,10 @@ def setup_args():
         required=True,
     )
     parser.add_argument(
-        "--mtu-min", help="Min MTU.", required=True,
+        "--mtu-min", help="Min MTU. Must be in the range [1280, 1500].", required=True,
     )
     parser.add_argument(
-        "--mtu-max", help="Max MTU.", required=True,
+        "--mtu-max", help="Max MTU. Must be in the range [1280, 1500].", required=True,
     )
     parser.add_argument(
         "--mtu-step", help="By how much to increment the MTU between loops.", required=True,
@@ -93,7 +93,7 @@ def setup_args():
     )
     parser.add_argument(
         "--conf-file",
-        help="The WG interface name. Default: '/etc/wireguard/wg0.conf'",
+        help="The path to the interface config file. Default: '/etc/wireguard/wg0.conf'",
         required=False,
         default="/etc/wireguard/wg0.conf",
     )
