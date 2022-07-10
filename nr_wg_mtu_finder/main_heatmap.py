@@ -2,14 +2,10 @@ import argparse
 import signal
 import sys
 import time
-from distutils.util import strtobool
 
-from pydantic import BaseModel, StrictInt, StrictStr, root_validator
-from typing_extensions import Literal
+from pydantic import BaseModel, StrictStr
 
 from nr_wg_mtu_finder.plot import create_heatmap_from_log
-
-from .mtu_finder import MTUFinder
 
 
 def signal_handler(sig, frame):
@@ -39,7 +35,7 @@ def setup_args():
     """Setup args."""
     parser = argparse.ArgumentParser(
         description=(
-            "nr-wg-mtu-finder-plot - "
+            "nr-wg-mtu-finder-heatmap - "
             "Generate a heatmap file (png) from a log file (csv) that was created "
             "by the `nr-wg-mtu-finder` script. This is useful in case the original "
             "script file crashed midway."

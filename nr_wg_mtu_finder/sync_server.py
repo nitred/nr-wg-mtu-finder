@@ -1,15 +1,18 @@
-import traceback
+from typing import Optional
 
 from flask import Flask, jsonify, request
 from typing_extensions import Literal
-from typing import Optional
 
 status: Literal["NOT_INITIALIZED", "INITIALIZED", "SHUTDOWN"] = "NOT_INITIALIZED"
 mtu: Optional[int] = None
 
 
 def run_sync_server(host, port, to_server_queue, from_server_queue):
-    """Run a temporary flask/http server that returns server mtu and status and restarts server."""
+    """Run a flask/http server which is used to synchronize with the Peer script.
+
+    1. Peer can request the flask/http server for Server MTU and its status.
+    2. Peer can request the flask/http server to shutdown once the Peer is finished.
+    """
     app = Flask(__name__)
 
     def shutdown_server():
@@ -53,12 +56,4 @@ def run_sync_server(host, port, to_server_queue, from_server_queue):
         from_server_queue.put("INITIALIZE")
         return jsonify({"server_mtu": mtu, "server_status": status})
 
-    # @app.route("/server/shutdown", methods=["GET"])
-    # def server_restart():
-    #     from_server_queue.put("shutdown")
-    #     shutdown_server()
-    #     return jsonify(jsonify({"server_mtu": mtu, "server_status": "shutdown"}))
-
-    # Blocking call until the server received a GET request on /server/shutdown after which
-    # the flask server is shutdown
     app.run(host=host, port=port)

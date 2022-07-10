@@ -1,15 +1,19 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
+import seaborn as sns
 
 
-def plot_log(log_filename, plot_filename):
+def create_heatmap_from_log(log_filepath, heatmap_filepath):
     f, axes = plt.subplots(nrows=2, ncols=2, figsize=(12, 12))
 
-    df = pd.read_csv(log_filename)
+    df = pd.read_csv(log_filepath)
 
     ax = axes[0, 0]
-    dfx = df.pivot(index="server_mtu", columns="peer_mtu", values="upload_rcv_mbps",)
+    dfx = df.pivot(
+        index="server_mtu",
+        columns="peer_mtu",
+        values="upload_rcv_mbps",
+    )
     sns.heatmap(
         dfx.values,
         linewidth=0.5,
@@ -74,4 +78,9 @@ def plot_log(log_filename, plot_filename):
 
     f.suptitle("Peer MTU vs Server MTU Bandwidth (Mbps)")
     f.tight_layout()
-    f.savefig(plot_filename, dpi=300)
+    f.savefig(heatmap_filepath, dpi=300)
+
+    print(
+        f"create_heatmap_from_log: Done generating heatmap from log file. Heatmap "
+        f"can be found at '{heatmap_filepath}'"
+    )
