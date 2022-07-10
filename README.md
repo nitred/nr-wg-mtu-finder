@@ -3,11 +3,21 @@ A python project to help find the optimal MTU values that maximizes the upload o
 
 I built the project to help myself find the right MTU values for my WG server and peer. I inadvertently found that the default MTU values for the server and peer in my case put my WG connection in a bandwidth dead zone. [Related reddit post](https://www.reddit.com/r/WireGuard/comments/plm8y7/finding_the_optimal_mtu_for_wg_server_and_wg_peer/).
 
+You can have a look at the real-world heatmaps which are posted by users in the issue [Post your MTU heatmaps here!](https://github.com/nitred/nr-wg-mtu-finder/issues/4) If you happen to successfully use `nr-wg-mtu-finder` and are able to generate a heatmap, please post your heatmap in the issue if possible. 
 
-***Please read the following documentation carefully, especially the WARNING section***.
 
-* This project offers no warranties, therefore do not use in production. Ideally trying using two VMs that are similar to your production setup.
+***Lastly, please read the following documentation carefully!***
+
+* Read the *WARNING* section!
+* This project offers no warranties, therefore do not use it in production. Ideally trying using two VMs that are similar to your production setup.
 * The project was developed and tested against a WG peer and WG server running Ubuntu 20.04.
+    * Additionally the project only supports `python 3.8` and `python 3.9`. While it may work on `python 3.7` and `python 3.10`, you may have to resolve some issues with building depedencies, yourself.  
+
+
+#### Project Version
+```
+0.2.0 
+```
 
 
 # Example Bandwidth Plot
@@ -26,6 +36,9 @@ That being said, if you're an experienced python developer, please go through th
 
 
 # Installation
+
+The project has been built and tested on  
+
 
 Install the following on both the WG server and WG peer
 * Install `ping`
@@ -48,9 +61,8 @@ Install the following on both the WG server and WG peer
     ```
 * Install the project
     ```bash
-    # Use your environment manager of choice like virtualenv or conda to pre-create an environment
-    # This package has the following dependencies: pandas, matplotlib, pydantic, requests, flask
-    pip install git+https://github.com/nitred/nr-wg-mtu-finder.git --upgrade
+    # Use your environment manager of choice like virtualenv or conda or poetry to pre-create an environment
+    pip install nr-wg-mtu-finder==0.2.0
     ```
 
 # Usage
@@ -60,7 +72,7 @@ Install the following on both the WG server and WG peer
 1. The project assumes that you already have a working WG installation on both the WG peer and WG server.
 1. The project assumes that you already have a WG interface like `wg0`.
 1. The project assumes that you already have a WG conf file like `/etc/wireguard/wg0.conf`. ***Take a backup of these files***.
-1. Before running the following scripts, the WG interface is expected to be active/online such that the peer is able to ping the server.    
+1. Before running the following scripts, the WG interface is expected to be active/online such that the peer is able to ping the server. Use `wg-quick up INTERFACE` on both the WG server and WG peer to activate the connection.
 1. Start the WG server script before the WG peer script
 
 ### On the WG Server
@@ -146,7 +158,7 @@ Install the following on both the WG server and WG peer
 1. If the server has finishing cycling through all of its MTUs and then receives a request from peer script that it is ready for a new cycle, then the server sends a `SHUTDOWN` signal to the peer script via the `sync_server`.
 
 
-### How does the server script work?
+### How does the peer script work?
 * On start, the peer script checks if the `sync_server` is reachable. Once it is reachable, it sends a `peer/ready` request to the server script.
 * The peer script then waits for the `iperf3` server to start on the server side. Once it recognizes that the iperf3 server has started, and then the peer script starts cycling through each of its MTUs.
     * For each MTU, the peer script runs an upload and download test using the following command
@@ -171,6 +183,8 @@ Install the following on both the WG server and WG peer
 So if you successfully ran the server and peer script, you should find two new files (csv + png) generated in the same directory where you ran the ***peer script*** on the ***WG-peer*** server.
 
 # CLI Options
+
+#### nr-wg-mtu-finder
 ```
 $ nr-wg-mtu-finder --help
 usage: nr-wg-mtu-finder [-h] --mode MODE --mtu-min MTU_MIN --mtu-max MTU_MAX
@@ -202,6 +216,21 @@ optional arguments:
   --peer-skip-errors PEER_SKIP_ERRORS
                         Skip errors when an expected error occurs in peer mode
                         during MTU loop.
+```
+
+#### nr-wg-mtu-finder-heatmap
+```
+$ nr-wg-mtu-finder-heatmap --help
+usage: nr-wg-mtu-finder-heatmap [-h] --log-filepath LOG_FILEPATH --heatmap-filepath HEATMAP_FILEPATH
+
+nr-wg-mtu-finder-plot - Generate a heatmap file (png) from a log file (csv) that was created by the `nr-wg-mtu-finder` script. This is useful in case the original script file crashed midway.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --log-filepath LOG_FILEPATH
+                        Absolute path to the log file (csv) that was created by the `nr-wg-mtu-finder` script.
+  --heatmap-filepath HEATMAP_FILEPATH
+                        Absolute path to the heatmap file (png) which will be created from the log file (csv).                  
 ```
 
 ## License
