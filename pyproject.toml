@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nr-wg-mtu-finder"
-version = "0.2.0"
+version = "0.2.1"
 description = "Scripts to find the optimal MTU for Wireguard server and peers."
 authors = ["nitred <nitish.k.reddy@gmail.com>"]
 

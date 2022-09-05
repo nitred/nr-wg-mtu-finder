@@ -1,11 +1,13 @@
 import argparse
 import signal
-import time
 import sys
-from pydantic import BaseModel, StrictStr, StrictInt, root_validator
-from typing_extensions import Literal
-from .mtu_finder import MTUFinder
+import time
 from distutils.util import strtobool
+
+from pydantic import BaseModel, StrictInt, StrictStr, root_validator
+from typing_extensions import Literal
+
+from .mtu_finder import MTUFinder
 
 
 def signal_handler(sig, frame):
@@ -52,7 +54,9 @@ class ArgsModel(BaseModel):
             raise ValueError(f"mtu_max: {mtu_max} must be in range [1280, 1500].")
 
         if not (mtu_min <= mtu_max):
-            raise ValueError(f"mtu_min: {mtu_min} must be less than or equal to mtu_max: {mtu_max}")
+            raise ValueError(
+                f"mtu_min: {mtu_min} must be less than or equal to mtu_max: {mtu_max}"
+            )
 
         return values
 
@@ -63,33 +67,50 @@ class ArgsModel(BaseModel):
 def setup_args():
     """Setup args."""
     parser = argparse.ArgumentParser(
-        description="nr-wg-mtu-finder - Helps find the optimal Wireguard MTU between Server and Peer."
+        description=(
+            "nr-wg-mtu-finder - Helps find the optimal Wireguard MTU between "
+            "a WG Server and a WG Peer."
+        )
     )
     parser.add_argument(
         "--mode",
         help=(
-            "Mode is 'server' if you are running this script on the WG Server, "
-            "else the mode is 'peer' if you are running this script on the WG Peer."
+            "Mode should be 'server' if you are running this script on the WG Server. "
+            "Mode should be 'peer' if you are running this script on the WG Peer."
         ),
         required=True,
     )
     parser.add_argument(
-        "--mtu-min", help="Min MTU. Must be in the range [1280, 1500].", required=True,
+        "--mtu-min",
+        help="Min MTU. Must be in the range [1280, 1500].",
+        required=True,
     )
     parser.add_argument(
-        "--mtu-max", help="Max MTU. Must be in the range [1280, 1500].", required=True,
+        "--mtu-max",
+        help="Max MTU. Must be in the range [1280, 1500].",
+        required=True,
     )
     parser.add_argument(
-        "--mtu-step", help="By how much to increment the MTU between loops.", required=True,
+        "--mtu-step",
+        help="By how much to increment the MTU between loops.",
+        required=True,
     )
     parser.add_argument(
-        "--server-ip", help="The IP address of the WG server and flask server.", required=True,
+        "--server-ip",
+        help="The IP address of the WG server and flask server.",
+        required=True,
     )
     parser.add_argument(
-        "--server-port", help="The port for the flask server.", required=False, default=5000,
+        "--server-port",
+        help="The port for the flask server. Default: 5000",
+        required=False,
+        default=5000,
     )
     parser.add_argument(
-        "--interface", help="The WG interface name. Default: 'wg0'", required=False, default="wg0"
+        "--interface",
+        help="The WG interface name. Default: 'wg0'",
+        required=False,
+        default="wg0",
     )
     parser.add_argument(
         "--conf-file",
@@ -99,7 +120,11 @@ def setup_args():
     )
     parser.add_argument(
         "--peer-skip-errors",
-        help="Skip errors when an expected error occurs in peer mode during MTU loop.",
+        help=(
+            "Skip errors when known errors occur in 'peer' mode during the MTU loop. "
+            "The known errors are logged and the loop continues without crashing. "
+            "Default: 'True'. Example usage: --peer-skip-errors False"
+        ),
         required=False,
         default=True,
         type=strtobool,

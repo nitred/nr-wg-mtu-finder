@@ -16,7 +16,7 @@ You can have a look at the real-world heatmaps which are posted by users in the 
 
 #### Project Version
 ```
-0.2.0 
+0.2.1
 ```
 
 
@@ -62,7 +62,7 @@ Install the following on both the WG server and WG peer
 * Install the project
     ```bash
     # Use your environment manager of choice like virtualenv or conda or poetry to pre-create an environment
-    pip install nr-wg-mtu-finder==0.2.0
+    pip install nr-wg-mtu-finder==0.2.1 --upgrade
     ```
 
 # Usage
@@ -187,20 +187,18 @@ So if you successfully ran the server and peer script, you should find two new f
 #### nr-wg-mtu-finder
 ```
 $ nr-wg-mtu-finder --help
-usage: nr-wg-mtu-finder [-h] --mode MODE --mtu-min MTU_MIN --mtu-max MTU_MAX
-                        --mtu-step MTU_STEP --server-ip SERVER_IP
-                        [--server-port SERVER_PORT] [--interface INTERFACE]
-                        [--conf-file CONF_FILE]
+usage: nr-wg-mtu-finder [-h] --mode MODE --mtu-min MTU_MIN --mtu-max MTU_MAX --mtu-step
+                        MTU_STEP --server-ip SERVER_IP [--server-port SERVER_PORT]
+                        [--interface INTERFACE] [--conf-file CONF_FILE]
                         [--peer-skip-errors PEER_SKIP_ERRORS]
 
-nr-wg-mtu-finder - Helps find the optimal Wireguard MTU between Server and
-Peer.
+nr-wg-mtu-finder - Helps find the optimal Wireguard MTU between a WG Server and a WG Peer.
 
 optional arguments:
   -h, --help            show this help message and exit
-  --mode MODE           Mode is 'server' if you are running this script on the
-                        WG Server, else the mode is 'peer' if you are running
-                        this script on the WG Peer.
+  --mode MODE           Mode should be 'server' if you are running this script on the WG
+                        Server. Mode should be 'peer' if you are running this script on
+                        the WG Peer.
   --mtu-min MTU_MIN     Min MTU. Must be in the range [1280, 1500].
   --mtu-max MTU_MAX     Max MTU. Must be in the range [1280, 1500].
   --mtu-step MTU_STEP   By how much to increment the MTU between loops.
@@ -214,24 +212,41 @@ optional arguments:
                         The path to the interface config file. Default:
                         '/etc/wireguard/wg0.conf'
   --peer-skip-errors PEER_SKIP_ERRORS
-                        Skip errors when an expected error occurs in peer mode
-                        during MTU loop.
+                        Skip errors when known errors occur in 'peer' mode during the MTU
+                        loop. The known errors are logged and the loop continues without
+                        crashing. Default: 'True'. Example usage: --peer-skip-errors False
+
+
 ```
 
 #### nr-wg-mtu-finder-heatmap
 ```
 $ nr-wg-mtu-finder-heatmap --help
-usage: nr-wg-mtu-finder-heatmap [-h] --log-filepath LOG_FILEPATH --heatmap-filepath HEATMAP_FILEPATH
+usage: nr-wg-mtu-finder-heatmap [-h] --log-filepath LOG_FILEPATH --heatmap-filepath
+                                HEATMAP_FILEPATH
 
-nr-wg-mtu-finder-plot - Generate a heatmap file (png) from a log file (csv) that was created by the `nr-wg-mtu-finder` script. This is useful in case the original script file crashed midway.
+nr-wg-mtu-finder-heatmap - Generate a heatmap file (png) from a log file (csv) that was
+created by the `nr-wg-mtu-finder` script. This is useful in case the original script file
+crashed midway.
 
 optional arguments:
   -h, --help            show this help message and exit
   --log-filepath LOG_FILEPATH
-                        Absolute path to the log file (csv) that was created by the `nr-wg-mtu-finder` script.
+                        Absolute path to the log file (csv) that was created by the `nr-wg-
+                        mtu-finder` script.
   --heatmap-filepath HEATMAP_FILEPATH
-                        Absolute path to the heatmap file (png) which will be created from the log file (csv).                  
+                        Absolute path to the heatmap file (png) which will be created from
+                        the log file (csv).
+         
 ```
 
-## License
+# Development
+
+### Publish to pypi.org
+* Bump version
+* `pip install poetry==1.1.15`
+* `poetry build`
+* `poetry publish --dry-run`
+
+# License
 MIT

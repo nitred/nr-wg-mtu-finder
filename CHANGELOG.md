@@ -1,8 +1,11 @@
 # Changelog
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## tag: 0.1.0 / 2021-09-14
-- First working release
+
+## tag: 0.2.1 / 2022-09-06
+- (PR #6) Bugfix: switch axis labels for correct heatmap display
+- Contributors
+  - @ahasbini
 
 
 ## tag: 0.2.0 / 2022-07-10
@@ -13,3 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
     - This script comes in handy if the original `nr-wg-mtu-finder` crashes mid way. Then a heatmap can be generated from the partial log file (csv) too, barring formatting issues of the log file.
 - Formatted with black (88 linewidth) and isort (profile=black)
 - First release to pypi so it can be installed with `pip install nr-wg-mtu-finder==0.2.0 --upgrade`
+
+
+## tag: 0.1.0 / 2021-09-14
+- First working release
