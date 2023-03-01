@@ -61,8 +61,13 @@ Install the following on both the WG server and WG peer
     ```
 * Install the project
     ```bash
-    # Use your environment manager of choice like virtualenv or conda or poetry to pre-create an environment
-    pip install nr-wg-mtu-finder==0.2.1 --upgrade
+    python3 --version #ensure that you have python 3.8 or 3.9
+    brew install python@3.9 #install it with package manager of your choice
+    python3.9 -m venv ~/python/nr-wg-mtu-finder-3.9 #create a virtual environment
+    source python/nr-wg-mtu-finder-3.9/bin/activate #activate it
+    python3 --version #now you should see python 3.9
+    pip install nr-wg-mtu-finder==0.2.1 --upgrade #install the project
+    #it will be available in PATH
     ```
 
 # Usage
