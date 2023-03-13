@@ -41,19 +41,22 @@ The project has been built and tested on
 
 
 Install the following on both the WG server and WG peer
+
+For MacOS you can use Homebrew to install all of the dependencies.
 * Install `ping`
     ```bash
-    # Ubuntu
     sudo apt install iputils-ping
     ```
 * Install `iperf3`
     ```bash
-    # Source: https://iperf.fr/iperf-download.php
+    sudo apt install iperf3
     ```
 * Install `sed`
     ```bash
     # Ubuntu
     sudo apt install sed
+    # MacOS. You need to install gnu-sed to be compatible with this package. You might also need to path it properly like this `PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"`
+    brew install gnu-sed
     ```
 * Install `wg-quick`
     ```bash
