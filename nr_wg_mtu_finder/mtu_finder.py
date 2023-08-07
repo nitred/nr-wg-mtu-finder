@@ -167,7 +167,7 @@ class MTUFinder(object):
         """
         self.__validate_conf_file()
 
-        msg = f"Setting MTU to {self.current_mtu} in /etc/wireguard/wg0.conf"
+        msg = f"Setting MTU to {self.current_mtu} in {self.conf_file}"
         print(f"{msg:<50s}", end=": ")
         process = subprocess.Popen(
             ["sed", "-i", f"s/MTU.*/MTU = {self.current_mtu}/", f"{self.conf_file}"],
