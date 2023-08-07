@@ -3,7 +3,7 @@ A python project to help find the optimal MTU values that maximizes the upload o
 
 I built the project to help myself find the right MTU values for my WG server and peer. I inadvertently found that the default MTU values for the server and peer in my case put my WG connection in a bandwidth dead zone. [Related reddit post](https://www.reddit.com/r/WireGuard/comments/plm8y7/finding_the_optimal_mtu_for_wg_server_and_wg_peer/).
 
-You can have a look at the real-world heatmaps which are posted by users in the issue [Post your MTU heatmaps here!](https://github.com/nitred/nr-wg-mtu-finder/issues/4) If you happen to successfully use `nr-wg-mtu-finder` and are able to generate a heatmap, please post your heatmap in the issue if possible. 
+You can have a look at the real-world heatmaps which are posted by users in the issue [Post your MTU heatmaps here!](https://github.com/nitred/nr-wg-mtu-finder/issues/4) If you happen to successfully use `nr-wg-mtu-finder` and are able to generate a heatmap, please post your heatmap in the issue if possible.
 
 
 ***Lastly, please read the following documentation carefully!***
@@ -11,7 +11,7 @@ You can have a look at the real-world heatmaps which are posted by users in the 
 * Read the *WARNING* section!
 * This project offers no warranties, therefore do not use it in production. Ideally trying using two VMs that are similar to your production setup.
 * The project was developed and tested against a WG peer and WG server running Ubuntu 20.04.
-    * Additionally the project only supports `python 3.8` and `python 3.9`. While it may work on `python 3.7` and `python 3.10`, you may have to resolve some issues with building depedencies, yourself.  
+    * Additionally the project only supports `python 3.8` and `python 3.9`. While it may work on `python 3.7` and `python 3.10`, you may have to resolve some issues with building dependencies, yourself.
 
 
 #### Project Version
@@ -37,7 +37,7 @@ That being said, if you're an experienced python developer, please go through th
 
 # Installation
 
-The project has been built and tested on  
+The project has been built and tested on Ubuntu 20.04 & Python 3.9.
 
 
 Install the following on both the WG server and WG peer
@@ -97,7 +97,7 @@ Install the following on both the WG server and WG peer
     ```
 1. Start the server script with the following command.
     ```bash
-    # Example: The script cycles server MTUs from 1280 to 1290 in steps of 2
+    # Example: The script loops through server MTUs from 1280 to 1290 in steps of 2
     nr-wg-mtu-finder --mode server --mtu-min 1280 --mtu-max 1290 --mtu-step 2 --server-ip 10.2.0.1
     ```
 
@@ -111,16 +111,16 @@ Install the following on both the WG server and WG peer
     [Peer]
     ...
     ```
-1. Start the server script with the following command.
+1. Start the peer script with the following command.
     ```bash
-    # Example: The script cycles peer MTUs from 1280 to 1290 in steps of 2
+    # Example: The script cycles through peer MTUs from 1280 to 1290 in steps of 2
     nr-wg-mtu-finder --mode peer --mtu-min 1280 --mtu-max 1290 --mtu-step 2 --server-ip 10.2.0.1
     ```
 
 # How it works?
 
 * Two python scripts need to be running simultaneously, one of the WG server and one on the WG peer. Let's call them *server script* and *peer script*.
-* The both scripts use `subprocess.Popen` to run shell commands. The following commands are used and expected to be pre-installed if not already available:
+* Both scripts use `subprocess.Popen` to run shell commands. The following commands are used and expected to be pre-installed if not already available:
     * `ping`
     * `iperf3`
     * `wg-quick`
@@ -131,12 +131,12 @@ Install the following on both the WG server and WG peer
 ### How does the server script work?
 1. The flow for the server script is defined in the method `MTUFinder.run_server_mode()`.
 1. First, a flask server called a `sync_server` is run is the background on a separate process.
-    * The `sync_server's` listens for requests and commands from the peer script so that they can synchronize with each other.
+    * The `sync_server` listens for requests and commands from the peer script so that they can synchronize with each other.
     * The peer script waits for the `sync_server` to be available before running any upload or download tests.
-    * The peer scripts get the status and MTU of the server script from the `sync_server`.
-    * The peer script tells the `sync_server` that it is done with its cycling through all of its MTUs and is ready for the server script to change its MTU so that it can start a fresh cycle.
-    * The `sync_server` informs the peer script that the server script is finished with cycling through all MTUs and that it is going to shut itself down. The peer script uses this signal to shut itself down as well.
-1. When the server script receives an `INTIALIZE` signal, it runs the following shell commands
+    * The peer script gets the status and MTU of the server script from the `sync_server`.
+    * The peer script tells the `sync_server` that it is done with its looping through all of its MTUs and is ready for the server script to change its MTU so that it can start a fresh cycle.
+    * The `sync_server` informs the peer script that the server script is finished with looping through all MTUs and that it is going to shut itself down. The peer script uses this signal to shut itself down as well.
+1. When the server script receives an `INITIALIZE` signal, it runs the following shell commands
     * First, terminate an `iperf3` server process if it is already running.
     * Spin down the WG interface
         ```
@@ -168,10 +168,10 @@ Install the following on both the WG server and WG peer
         # Download test
         iperf3 -c 10.2.0.1 -J -t 5 -i 5 -R
         ```
-    * After each download and upload test, the peer script parses the output and stores the bandwidth results in a bandwidth log file.
+    * After each download and upload test, the peer script parses the output and stores the bandwidth results in a bandwidth log/csv file.
 * Once the peer script is finished cycling through all of its MTU, it sends another `peer/ready` request to the server script and restarts the whole process again with the next server MTU.
-* If the server script is finished cycling through all of its MTUs, then it sends a `SHUTDOWN` signal to the peer script as a reply to the `peer/ready` request. The server shuts down after a short delay as does the peer script.
-* Finally, the user can check the bandwidth log file to see the results.
+* If the server script is finished cycling through all of its MTUs, then it sends a `SHUTDOWN` response to the peer script as a reply to the `peer/ready` request. The server shuts down after a short delay as does the peer script.
+* Finally, the user can check the bandwidth log/csv file to see the results.
 
 
 ### How is the MTU heatmap generated?
@@ -180,7 +180,7 @@ Install the following on both the WG server and WG peer
 * Once the ***peer script*** is done or is shutting down, then the plot function is called which reads the contents of log csv file and generates a heatmap graph which is written to a png file like in this [example.png](https://github.com/nitred/nr-wg-mtu-finder/blob/master/examples/example.png).
 * The filename for the heatmap png looks like `wg_mtu_finder_peer_20220101T000000.png` and is generated in the same directory where the ***peer script*** was run.
 
-So if you successfully ran the server and peer script, you should find two new files (csv + png) generated in the same directory where you ran the ***peer script*** on the ***WG-peer*** server.
+So if you successfully ran the server and peer script, you should find two new files (one csv and one png) generated in the same directory where you ran the ***peer script*** on the ***WG-peer*** server.
 
 # CLI Options
 
@@ -237,7 +237,7 @@ optional arguments:
   --heatmap-filepath HEATMAP_FILEPATH
                         Absolute path to the heatmap file (png) which will be created from
                         the log file (csv).
-         
+
 ```
 
 # Development
