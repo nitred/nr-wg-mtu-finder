@@ -48,7 +48,8 @@ Install the following on both the WG server and WG peer
     ```
 * Install `iperf3`
     ```bash
-    # Source: https://iperf.fr/iperf-download.php
+    # Ubuntu
+    sudo apt install iperf3
     ```
 * Install `sed`
     ```bash
