@@ -16,7 +16,7 @@ You can have a look at the real-world heatmaps which are posted by users in the 
 
 #### Project Version
 ```
-0.2.1
+0.3.0.dev1
 ```
 
 
@@ -37,7 +37,7 @@ That being said, if you're an experienced python developer, please go through th
 
 # Installation
 
-The project has been built and tested on Ubuntu 20.04 & Python 3.9.
+The project has been built and tested on Ubuntu 25.04 & Python 3.13.
 
 
 Install the following on both the WG server and WG peer
@@ -62,7 +62,7 @@ Install the following on both the WG server and WG peer
 * Install the project
     ```bash
     # Use your environment manager of choice like virtualenv or conda or poetry to pre-create an environment
-    pip install nr-wg-mtu-finder==0.2.1 --upgrade
+    pip install nr-wg-mtu-finder==0.3.0.dev1 --upgrade
     ```
 
 # Usage

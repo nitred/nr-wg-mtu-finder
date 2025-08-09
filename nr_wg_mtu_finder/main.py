@@ -2,7 +2,6 @@ import argparse
 import signal
 import sys
 import time
-from distutils.util import strtobool
 
 from pydantic import BaseModel, StrictInt, StrictStr, root_validator
 from typing_extensions import Literal
@@ -127,7 +126,7 @@ def setup_args():
         ),
         required=False,
         default=True,
-        type=strtobool,
+        action=argparse.BooleanOptionalAction,
     )
     args = parser.parse_args()
     return args
