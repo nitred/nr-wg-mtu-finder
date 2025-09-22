@@ -34,6 +34,11 @@ class MTUFinder(object):
 
         self.server_ip = server_ip
         self.server_port = server_port
+
+        # Input validation for security
+        self._validate_interface(interface)
+        self._validate_conf_file(conf_file)
+
         self.interface = interface
         self.conf_file = conf_file
 
@@ -60,6 +65,28 @@ class MTUFinder(object):
             self.run_peer_mode()
         else:
             raise NotImplementedError()
+
+    def _validate_interface(self, interface):
+        """Validate interface name for security."""
+        import re
+        if not re.match(r'^[a-zA-Z0-9_-]+$', interface):
+            raise ValueError(f"Invalid interface name: {interface}")
+        if len(interface) > 15:  # Linux interface name limit
+            raise ValueError(f"Interface name too long: {interface}")
+
+    def _validate_conf_file(self, conf_file):
+        """Validate configuration file path for security."""
+        import os
+        # Only allow WireGuard config directory
+        allowed_dir = "/etc/wireguard/"
+        if not conf_file.startswith(allowed_dir):
+            raise ValueError(f"Configuration file must be in {allowed_dir}")
+        if not conf_file.endswith('.conf'):
+            raise ValueError("Configuration file must have .conf extension")
+        # Check for path traversal
+        normalized = os.path.normpath(conf_file)
+        if normalized != conf_file or '..' in conf_file:
+            raise ValueError(f"Invalid path: {conf_file}")
 
     def create_log(self):
         """Create an empty CSV log file with the headers.
